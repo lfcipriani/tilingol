@@ -1,0 +1,12 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    ffi (1.9.3)
+    pi_piper (1.3.2)
+      ffi
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  pi_piper
