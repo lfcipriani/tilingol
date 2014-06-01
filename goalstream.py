@@ -1,7 +1,7 @@
 from twython import TwythonStreamer
 from jinglebells import JingleBells
 import time
-import thread
+import threading
 
 class GoalStream(TwythonStreamer):
 
@@ -13,6 +13,7 @@ class GoalStream(TwythonStreamer):
         self.tpsListMax = 20
         self.currentSec = 0
         self.ring = JingleBells(18)
+        self.ringThread = threading.Thread(target = ring_the_bells, (self.ring, 12, 0.1,))
 
     def calculate_tps(self):
         if self.currentSec == 0:
@@ -33,10 +34,8 @@ class GoalStream(TwythonStreamer):
             self.calculate_tps()
 
             if self.tps >= self.tpsThreshold:
-                try:
-                    thread.start_new_thread(self.ring_the_bells, (self.ring, 12, 0.1) )
-                except:
-                    print "Error: unable to start thread"
+                if !ringThread.isAlive():
+                    ringThread.start()
 
             #created_at = data['created_at']
             #time.mktime(time.strptime(created_at,"%a %b %d %H:%M:%S +0000 %Y"))
