@@ -8,12 +8,12 @@ class GoalStream(TwythonStreamer):
     def configure(self, tpsThreshold, tpsLength):
         self.tpsThreshold = tpsThreshold
         self.tps = 0
-        self.tpsLength = 1
+        self.tpsLength = tpsLength
         self.tpsList = []
         self.tpsListMax = 20
         self.currentSec = 0
         self.ring = JingleBells(18)
-        self.ringThread = threading.Thread(target = ring_the_bells, (self.ring, 12, 0.1,))
+        self.ringThread = threading.Thread(target = self.ring_the_bells, args=(self.ring, 12, 0.1,))
 
     def calculate_tps(self):
         if self.currentSec == 0:
@@ -34,8 +34,9 @@ class GoalStream(TwythonStreamer):
             self.calculate_tps()
 
             if self.tps >= self.tpsThreshold:
-                if !ringThread.isAlive():
-                    ringThread.start()
+                if not self.ringThread.isAlive():
+                    self.ringThread = threading.Thread(target = self.ring_the_bells, args=(self.ring, 12, 0.1,))
+                    self.ringThread.start()
 
             #created_at = data['created_at']
             #time.mktime(time.strptime(created_at,"%a %b %d %H:%M:%S +0000 %Y"))
