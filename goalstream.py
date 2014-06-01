@@ -18,15 +18,18 @@ class GoalStream(TwythonStreamer):
     def calculate_tps(self):
         if self.currentSec == 0:
             currentSec = int(time.time())
-        if self.currentSec < (self.currentSec + self.tpsLength):
+            print "Current sec: " + str(currentSec)
+        if int(time.time()) < (self.currentSec + self.tpsLength):
             self.tps = self.tps + 1
+            print "TPS add: " + str(self.tps)
         else:
             self.tpsList.append(self.tps)
             self.tps = 1
             self.currentSec = int(time.time())
+            print "Current sec reset: " + str(self.currentSec) 
 
     def ring_the_bells(self, bell, iterations, speed):
-        print("ring!")
+        print("--> ring!")
         bell.shake(iterations, speed)
 
     def on_success(self, data):
@@ -34,9 +37,12 @@ class GoalStream(TwythonStreamer):
             self.calculate_tps()
 
             if self.tps >= self.tpsThreshold:
+                print "> threshold"
                 if not self.ringThread.isAlive():
                     self.ringThread = threading.Thread(target = self.ring_the_bells, args=(self.ring, 12, 0.1,))
                     self.ringThread.start()
+                else:
+	            print "skip alive thread"
 
             #created_at = data['created_at']
             #time.mktime(time.strptime(created_at,"%a %b %d %H:%M:%S +0000 %Y"))
