@@ -10,4 +10,5 @@ OAUTH_TOKEN = credentials[2].strip()
 OAUTH_TOKEN_SECRET = credentials[3].strip()
 
 stream = GoalStream(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
-stream.statuses.filter(track='twitter')
+stream.configure(1,1)
+stream.statuses.filter(track='gol', language="pt")
