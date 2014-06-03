@@ -3,46 +3,52 @@ from jinglebells import JingleBells
 import time
 import threading
 
+SHAKES = 12
+SPEED  = 0.1
+
 class GoalStream(TwythonStreamer):
 
-    def configure(self, tpsThreshold, tpsLength):
-        self.tpsThreshold = tpsThreshold
-        self.tps = 0
-        self.tpsLength = tpsLength
-        self.tpsList = []
-        self.tpsListMax = 20
+    def configure(self, threshold, window):
+        self.threshold = threshold
+        self.frequency = 0
+        self.window = window
         self.currentSec = 0
         self.ring = JingleBells(18)
-        self.ringThread = threading.Thread(target = self.ring_the_bells, args=(self.ring, 12, 0.1,))
+        self.ringThread = threading.Thread(target = self.ring_the_bells, args=(self.ring, SHAKES, SPEED,))
 
-    def calculate_tps(self):
+    def calculate_frequency(self):
         if self.currentSec == 0:
-            currentSec = int(time.time())
-        if self.currentSec < (self.currentSec + self.tpsLength):
-            self.tps = self.tps + 1
+            self.currentSec = int(time.time())
+        if time.time() < (self.currentSec + self.window):
+            self.frequency = self.frequency + 1
         else:
-            self.tpsList.append(self.tps)
-            self.tps = 1
+            print "  ["+ str(self.currentSec) +"] tweets in the last "+ str(self.window) +" second(s) : " + str(self.frequency)
+            self.frequency = 1
             self.currentSec = int(time.time())
 
     def ring_the_bells(self, bell, iterations, speed):
-        print("ring!")
+        print("\\o/ ring! ring! \\o/")
         bell.shake(iterations, speed)
+
+    def is_tweet_valid(self, data):
+        return True
+        #if 'retweeted_status' not in data:
+            #return True
+        #else:
+            #return False
 
     def on_success(self, data):
         if 'text' in data:
-            self.calculate_tps()
+            if self.is_tweet_valid(data):
+                self.calculate_frequency()
 
-            if self.tps >= self.tpsThreshold:
-                if not self.ringThread.isAlive():
-                    self.ringThread = threading.Thread(target = self.ring_the_bells, args=(self.ring, 12, 0.1,))
-                    self.ringThread.start()
+                if self.frequency >= self.threshold:
+                    if not self.ringThread.isAlive():
+                        self.ringThread = threading.Thread(target = self.ring_the_bells, args=(self.ring, SHAKES, SPEED,))
+                        self.ringThread.start()
 
-            #created_at = data['created_at']
-            #time.mktime(time.strptime(created_at,"%a %b %d %H:%M:%S +0000 %Y"))
-
-            print data['text'].encode('utf-8')
+                #print "  >> @" + data['user']['screen_name'].encode('utf-8') + ": " + data['text'].encode('utf-8')
 
     def on_error(self, status_code, data):
-        print status_code
+        print "Erro: " + str(status_code) + str(data)
 
