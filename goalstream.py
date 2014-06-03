@@ -25,6 +25,7 @@ class GoalStream(TwythonStreamer):
             print "  ["+ str(self.currentSec) +"] tweets in the last "+ str(self.window) +" second(s) : " + str(self.frequency)
             self.frequency = 1
             self.currentSec = int(time.time())
+            print "Current sec reset: " + str(self.currentSec) 
 
     def ring_the_bells(self, bell, iterations, speed):
         print("\\o/ ring! ring! \\o/")
