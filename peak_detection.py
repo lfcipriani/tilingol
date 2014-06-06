@@ -1,5 +1,6 @@
 import time
 import sys
+import logging
 
 class PeakDetection:
     def __init__(self, freq_window, moving_average_window, peak_threshold):
@@ -11,6 +12,11 @@ class PeakDetection:
         self.data       = []
         self.eam        = []
         self.growth     = []
+        self.logger = logging.getLogger(__name__)
+        self.logger.setLevel(logging.INFO)
+        handler = logging.FileHandler('data_'+str(int(time.time()))+'.log')
+        handler.setLevel(logging.INFO)
+        self.logger.addHandler(handler)
 
     def collect_frequency(self):
         if self.currentSec == 0:
@@ -24,33 +30,33 @@ class PeakDetection:
         
     def is_this_a_peak(self):
         if len(self.growth) > 0:
-            if self.growth[-1] > self.peak_threshold and abs(self.eam[-1] - self.eam[0]) >= 10:
+            if self.growth[-1] > self.peak_threshold:
                 return True
         return False
 
     def __update_window(self, frequency):
-        sys.stdout.write(str(self.currentSec))
+        data_entry = ""
+        data_entry += str(self.currentSec)
 
         self.data.append(frequency)
         if len(self.data) > self.moving_average_window:
             self.data.pop(0)
-        sys.stdout.write("," + str(self.data[-1]))
+        data_entry += "," + str(self.data[-1])
 
         if len(self.data) >= self.moving_average_window:
             if len(self.eam) == 0:
                 self.eam.append(sum(self.data[0:self.moving_average_window])/float(self.moving_average_window)) 
             else:
-                #=(B30-E29)*(2/(10+1)) + E29
                 self.eam.append((self.data[-1]-float(self.eam[-1])) * (2/float(self.moving_average_window + 1)) + float(self.eam[-1]))
             if len(self.eam) > self.moving_average_window:
                 self.eam.pop(0)
-            sys.stdout.write("," + str(self.eam[-1]))
+            data_entry += "," + str(self.eam[-1])
 
         if len(self.eam) >= self.moving_average_window:
             self.growth.append((self.eam[-1]-self.eam[0])/self.eam[0])
             if len(self.growth) > self.moving_average_window:
                 self.growth.pop(0) 
-            sys.stdout.write("," + str(self.growth[-1]))
+            data_entry += "," + str(self.growth[-1])
 
-        sys.stdout.write("\n")
+        self.logger.info(data_entry)
 
