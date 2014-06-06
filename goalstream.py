@@ -21,7 +21,7 @@ class GoalStream(TwythonStreamer):
         bell.shake(iterations, speed)
 
     def easteregg(self, data):
-        return ("toqueosinopequenino" == data["entities"]["hashtags"][0]["text"])
+        return (data['text'].encode('utf-8').find("toqueosinopequenino") > -1)
 
     def on_success(self, data):
         if 'text' in data:
@@ -34,7 +34,6 @@ class GoalStream(TwythonStreamer):
                         self.ringThread = threading.Thread(target = self.ring_the_bells, args=(self.ring, SHAKES, SPEED,))
                         self.ringThread.start()
 
-            print data
             #print "  >> @" + data['user']['screen_name'].encode('utf-8') + ": " + data['text'].encode('utf-8')
 
     def on_error(self, status_code, data):

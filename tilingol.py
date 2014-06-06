@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import sys
-print len(sys.argv)
 
 if len(sys.argv) < 5:
     print "Usage tilingol.py FREQUENCY_WINDOW MOVING_AVERAGE_WINDOW PEAK_THRESHOLD KEYWORDS [LANGS]"
