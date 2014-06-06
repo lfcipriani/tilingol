@@ -2,15 +2,13 @@
 
 import sys
 
-if len(sys.argv) != 4:
-    print "Usage tilingol.py FREQUENCY_WINDOW MOVING_AVERAGE_WINDOW PEAK_THRESHOLD"
+if len(sys.argv) != 5:
+    print "Usage tilingol.py FREQUENCY_WINDOW MOVING_AVERAGE_WINDOW PEAK_THRESHOLD KEYWORDS LANGS"
     exit()
 
-# configure parameters here
-TRACK    = 'gol,goal,gooool,goaaal,golo'#'tocaosino'
-FOLLOW = ''
+TRACK    = sys.argv[4]
+LANGUAGE = sys.argv[5]
 #FOLLOW   = '158487331,932429090,331975075,973277052,333152159,309340221,25073959,344801362,201352564,2424510447,473340249,575565118,307807956,106444705,1704998570,142204481,2178230389,586950556'
-LANGUAGE = ''
 
 from goalstream import GoalStream
 
@@ -25,7 +23,6 @@ OAUTH_TOKEN_SECRET = credentials[3].strip()
 
 print "Howdy! I'm tracking:"
 print "  TRACK     = " + TRACK
-print "  FOLLOW    = " + FOLLOW
 print "  LANGUAGE  = " + LANGUAGE
 print sys.argv[1] + " - " + sys.argv[2] + " - " + sys.argv[3] + "\n"
 
