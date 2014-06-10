@@ -25,6 +25,15 @@ print "  TRACK     = " + TRACK
 print "  LANGUAGE  = " + LANGUAGE
 print sys.argv[1] + " - " + sys.argv[2] + " - " + sys.argv[3] + "\n"
 
-stream = GoalStream(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
-stream.configure(int(sys.argv[1]), int(sys.argv[2]), float(sys.argv[3]), True)
-stream.statuses.filter(track=TRACK, language=LANGUAGE)
+tries = 1
+while True:
+    try:
+        stream = GoalStream(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
+        stream.configure(int(sys.argv[1]), int(sys.argv[2]), float(sys.argv[3]), True)
+        stream.statuses.filter(track=TRACK, language=LANGUAGE)
+    except Exception as e:
+        print e
+        if tries > 30:
+            break
+        tries += 1
+
