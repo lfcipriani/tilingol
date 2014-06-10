@@ -2,7 +2,6 @@
 
 require "rubygems"
 require "tweetstream"
-require "redis"
 require "yaml"
 require "json"
 require "uri"
@@ -54,7 +53,7 @@ end
 end
 
 puts "Starting to track: #{@keywords}...\nLanguages: #{@languages}"
-@client.filter(:track => @keywords, :language => @languages) do |status| #.sample do |status| #track(@keywords) do |status|
+@client.filter(:track => @keywords, :language => @languages) do |status| 
 
   @peak_detector.collect_frequency
 
