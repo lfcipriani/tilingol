@@ -6,6 +6,8 @@ require "yaml"
 require "json"
 require "uri"
 require_relative "./peak_detection"
+require_relative "./stdout_bell"
+require_relative "./jingle_bell"
 
 # CONFIGURATION
 # END OF CONFIGURATION
@@ -36,6 +38,7 @@ $stdout.sync = true
 @languages = ""
 
 @peak_detector = Tilingol::PeakDetection.new(1,10,1.5)
+@bell          = Tilingol::StdoutBell.new #JingleBell.new
 @client        = TweetStream::Client.new
 
 @client.on_error do |message|
@@ -48,17 +51,12 @@ end
   puts "You lost #{skip_count} tweets"
 end
 
-@client.on_delete do |status_id, user_id|
-  puts "Tweet deleted #{status_id}"
-end
-
 puts "Starting to track: #{@keywords}...\nLanguages: #{@languages}"
 @client.filter(:track => @keywords, :language => @languages) do |status| 
-
   @peak_detector.collect_frequency
 
-  puts "UEPA" if @peak_detector.is_this_a_peak?
+  @bell.ring! if @peak_detector.is_this_a_peak?
 
   #puts status.text
-
 end
+
