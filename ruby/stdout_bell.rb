@@ -1,4 +1,5 @@
 module Tilingol
+  # Will just print in the console
   class StdoutBell
     def initialize
     end

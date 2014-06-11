@@ -10,6 +10,11 @@ require_relative "./stdout_bell"
 require_relative "./jingle_bell"
 
 # CONFIGURATION
+@keywords      = "gol,gool,goool,golaço" 
+@languages     = ""
+@peak_detector = Tilingol::PeakDetection.new(1,10,1.5, true) #frequency window, moving average window, peak threshold
+@bell          = Tilingol::StdoutBell.new # or JingleBell.new | use the class according with the bell wanted
+@magic_word    = "toqueosinopequenino" # tweet with this word + a tracker keyword to ring the bell anyway
 # END OF CONFIGURATION
 
 unless ENV['TW_CONSUMER_KEY']
@@ -32,14 +37,7 @@ TweetStream.configure do |config|
   config.auth_method = :oauth
 end
 
-$stdout.sync = true
-
-@keywords  = "gol,gool,goool,golaço" 
-@languages = ""
-
-@peak_detector = Tilingol::PeakDetection.new(1,10,1.5)
-@bell          = Tilingol::StdoutBell.new #JingleBell.new
-@client        = TweetStream::Client.new
+@client = TweetStream::Client.new
 
 @client.on_error do |message|
   puts "ERROR: #{message}"
@@ -55,7 +53,7 @@ puts "Starting to track: #{@keywords}...\nLanguages: #{@languages}"
 @client.filter(:track => @keywords, :language => @languages) do |status| 
   @peak_detector.collect_frequency
 
-  @bell.ring! if @peak_detector.is_this_a_peak?
+  @bell.ring! if @peak_detector.is_this_a_peak? || status.text.index(@magic_word)
 
   #puts status.text
 end

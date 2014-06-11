@@ -1,7 +1,8 @@
 module Tilingol
+  # Will call python program that has the pin connections to ring the bell
   class JingleBell
     def initialize
-      @cmd = "sudo python ../jinglebells.py 20 0.05"
+      @cmd = "sudo python ../jinglebells.py 20 0.05" #shake the bells
       @pid = nil
     end
 

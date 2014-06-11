@@ -2,12 +2,13 @@ require "logger"
 
 module Tilingol
   class PeakDetection
-    def initialize(freq_window, moving_average_window, peak_threshold)
+    def initialize(freq_window, moving_average_window, peak_threshold, debug = false)
       @freq_window           = freq_window
       @moving_average_window = moving_average_window
       @peak_threshold        = peak_threshold
       @frequency  = 0
       @currentSec = 0
+      @flag       = false # to avoid extensive check of peak status
       @data       = []
       @eam        = []
       @growth     = []
@@ -15,6 +16,7 @@ module Tilingol
       @logger.formatter = proc do |severity, datetime, progname, msg|
         "#{msg}\n"
       end
+      @logger.level = debug ? Logger::DEBUG :: Logger::INFO
     end
 
     def collect_frequency
@@ -22,15 +24,17 @@ module Tilingol
       @currentSec = now if @currentSec == 0
       if now < (@currentSec + @freq_window)
         @frequency += 1
+        @flag = false
       else
         update_window(@frequency)
         @frequency = 1
         @currentSec = now
+        @flag = true
       end
     end
         
     def is_this_a_peak?
-      if @growth.size > 0
+      if @flag && @growth.size > 0
         return @growth.last > @peak_threshold
       end
       return false
@@ -63,7 +67,7 @@ module Tilingol
         data_entry += "," + @growth.last.to_s
       end
 
-      @logger.info(data_entry)
+      @logger.debug(data_entry)
     end
 
   end
