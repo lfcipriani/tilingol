@@ -1,5 +1,6 @@
 import RPi.GPIO as GPIO
 import time
+import sys
 
 class JingleBells:
 
@@ -19,10 +20,10 @@ class JingleBells:
             time.sleep(speed)
         self.pwm.stop()
 
-    def __del__(self):
-        GPIO.cleanup()
+    #def __del__(self):
+    #    GPIO.cleanup()
 
-if __name__ == '__main__'
+if __name__ == '__main__':
     jb = JingleBells(18)
-    jb.shake(int(sys.argv[1]), int(sys.argv[2]))
+    jb.shake(int(sys.argv[1]), float(sys.argv[2]))
 
