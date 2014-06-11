@@ -20,7 +20,7 @@ require_relative "./jingle_bell"
 unless ENV['TW_CONSUMER_KEY']
   # Will load credentials.yml, make sure it's there
   # This must to be used only for development environment
-  @oauth = YAML.load_file(File.expand_path("./credentials.yml"))
+  @oauth = YAML.load_file(File.expand_path("./config/credentials.yml"))
 
   ENV['TW_CONSUMER_KEY'] = @oauth["consumer_key"]
   ENV['TW_CONSUMER_SECRET'] = @oauth["consumer_secret"]

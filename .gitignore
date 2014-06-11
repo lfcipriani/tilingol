@@ -1,4 +1,5 @@
-config/*.txt
+python/config/*.txt
+config/*.yml
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -44,4 +45,3 @@ coverage.xml
 # Sphinx documentation
 docs/_build/
 
-ruby/credentials.yml

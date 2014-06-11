@@ -16,7 +16,7 @@ module Tilingol
       @logger.formatter = proc do |severity, datetime, progname, msg|
         "#{msg}\n"
       end
-      @logger.level = debug ? Logger::DEBUG :: Logger::INFO
+      @logger.level = debug ? Logger::DEBUG : Logger::INFO
     end
 
     def collect_frequency
@@ -24,7 +24,6 @@ module Tilingol
       @currentSec = now if @currentSec == 0
       if now < (@currentSec + @freq_window)
         @frequency += 1
-        @flag = false
       else
         update_window(@frequency)
         @frequency = 1
@@ -35,6 +34,7 @@ module Tilingol
         
     def is_this_a_peak?
       if @flag && @growth.size > 0
+        @flag = false
         return @growth.last > @peak_threshold
       end
       return false
