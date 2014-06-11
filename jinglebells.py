@@ -22,3 +22,7 @@ class JingleBells:
     def __del__(self):
         GPIO.cleanup()
 
+if __name__ == '__main__'
+    jb = JingleBells(18)
+    jb.shake(int(sys.argv[1]), int(sys.argv[2]))
+
