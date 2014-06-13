@@ -2,7 +2,7 @@ module Tilingol
   # Will call python program that has the pin connections to ring the bell
   class JingleBell
     def initialize
-      @cmd = "sudo python ./jinglebells.py 20 0.05" #shake the bells
+      @cmd = "sudo python ./jinglebells.py 10 0.1" #shake the bells
       @pid = nil
     end
 
@@ -13,12 +13,7 @@ module Tilingol
   private
 
     def pid_not_running?(pid)
-      begin
-        Process.kill(0,pid)
-        false
-      rescue Errno::ESRCH
-        true
-      end
+      `sudo ps -p #{pid}`.index(pid).nil?
     end
 
   end
