@@ -13,7 +13,8 @@ module Tilingol
   private
 
     def pid_not_running?(pid)
-      `sudo ps -p #{pid}`.index(pid).nil?
+      res = `sudo ps -p #{pid.to_s}`
+      !res.index("defunct").nil?
     end
 
   end

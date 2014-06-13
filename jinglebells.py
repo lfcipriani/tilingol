@@ -26,4 +26,6 @@ class JingleBells:
 if __name__ == '__main__':
     jb = JingleBells(18)
     jb.shake(int(sys.argv[1]), float(sys.argv[2]))
+    GPIO.cleanup()
+    exit()
 
